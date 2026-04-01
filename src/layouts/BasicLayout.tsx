@@ -1,18 +1,51 @@
-import { Outlet, Link } from 'react-router-dom';
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
+import { Layout, Menu } from "antd";
+import { DashboardOutlined, UserOutlined } from "@ant-design/icons";
+
+const { Header, Sider, Content } = Layout;
 
 export default function BasicLayout() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const menuItems = [
+    {
+      key: "/",
+      icon: <DashboardOutlined />,
+      label: "仪表盘",
+    },
+    {
+      key: "/users",
+      icon: <UserOutlined />,
+      label: "用户管理",
+    },
+  ];
+
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', margin: 0, fontFamily: 'sans-serif' }}>
-      <aside style={{ width: 200, padding: 20, background: '#f0f2f5', borderRight: '1px solid #e8e8e8' }}>
-        <h3>中后台系统</h3>
-        <nav style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 20 }}>
-          <Link to="/" style={{ textDecoration: 'none', color: '#333' }}>仪表盘</Link>
-          <Link to="/users" style={{ textDecoration: 'none', color: '#333' }}>用户管理</Link>
-        </nav>
-      </aside>
-      <main style={{ flex: 1, padding: 20, background: '#fff' }}>
-        <Outlet />
-      </main>
-    </div>
+    <Layout className="min-h-screen">
+      <Sider
+        theme="light"
+        breakpoint="lg"
+        collapsedWidth="0"
+        className="border-r border-gray-200"
+      >
+        <div className="h-16 flex items-center justify-center border-b border-gray-200">
+          <h1 className="text-xl font-bold text-primary m-0">Admin System</h1>
+        </div>
+        <Menu
+          mode="inline"
+          selectedKeys={[location.pathname]}
+          items={menuItems}
+          onClick={({ key }) => navigate(key)}
+          className="border-none mt-2"
+        />
+      </Sider>
+      <Layout>
+        <Header className="bg-white px-6 flex items-center shadow-sm z-10" />
+        <Content className="m-6 p-6 bg-white rounded-lg shadow-sm overflow-auto">
+          <Outlet />
+        </Content>
+      </Layout>
+    </Layout>
   );
 }
